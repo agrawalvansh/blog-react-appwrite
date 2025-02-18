@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Logo, Container, LogoutBtn } from '../index';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ function Header() {
         localStorage.getItem('theme') === 'dark'
     );
 
-    const navItems = useMemo(() => [
+    const navItems = React.useMemo(() => [
       {
         name: 'Home',
         slug: "/",
@@ -50,97 +50,93 @@ function Header() {
     };
 
     return (
-      <motion.header 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="py-3 shadow-sm bg-white dark:bg-gray-900 sticky top-0 z-50"
-      >
+      <header className='w-full py-3 bg-gray-500 shadow-lg'>
         <Container>
-            <nav className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <Logo />
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        aria-label="Toggle theme"
-                    >
-                        {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                    </button>
-                </div>
+          <nav className='flex items-center justify-between w-full'>
+            <div className="flex items-center gap-2">
+              <Logo />
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-gray-400 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+            </div>
 
-                {/* Desktop Navigation */}
-                <ul className="hidden md:flex items-center gap-4">
-                    {navItems.map((item) => 
-                        item.active ? (
-                            <li key={item.name}>
-                                <Link
-                                    to={item.slug}
-                                    className={`inline-block px-4 py-2 duration-200 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full ${
-                                        pathname === item.slug 
-                                            ? 'text-blue-600 dark:text-blue-400 font-medium' 
-                                            : 'text-gray-700 dark:text-gray-300'
-                                    }`}
-                                >
-                                    {item.name}
-                                </Link>
-                            </li>
-                        ) : null
-                    )}
-                    {authStatus && (
-                        <li>
-                            <LogoutBtn />
-                        </li>
-                    )}
+            {/* Desktop Navigation */}
+            <ul className="hidden md:flex items-center gap-4">
+              {navItems.map((item) => 
+                item.active ? (
+                  <li key={item.name}>
+                    <Link
+                      to={item.slug}
+                      className={`inline-block px-4 py-2 rounded-lg transition-colors ${
+                        pathname === item.slug 
+                          ? 'bg-white text-gray-900' 
+                          : 'text-white hover:bg-gray-400'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ) : null
+              )}
+              {authStatus && (
+                <li>
+                  <LogoutBtn />
+                </li>
+              )}
+            </ul>
+
+            {/* Mobile Navigation */}
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-gray-400"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+            </button>
+          </nav>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden"
+              >
+                <ul className="pt-4 pb-3 space-y-2">
+                  {navItems.map((item) => 
+                    item.active ? (
+                      <li key={item.name}>
+                        <Link
+                          to={item.slug}
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-4 py-2 rounded-lg ${
+                            pathname === item.slug 
+                              ? 'bg-white text-gray-900' 
+                              : 'text-white hover:bg-gray-400'
+                          }`}
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ) : null
+                  )}
+                  {authStatus && (
+                    <li className="px-4">
+                      <LogoutBtn />
+                    </li>
+                  )}
                 </ul>
-
-                {/* Mobile Navigation */}
-                <button
-                    className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-                    onClick={() => setIsOpen(!isOpen)}
-                    aria-label="Toggle menu"
-                >
-                    {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-            </nav>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden"
-                    >
-                        <ul className="pt-4 pb-3 space-y-2">
-                            {navItems.map((item) => 
-                                item.active ? (
-                                    <li key={item.name}>
-                                        <Link
-                                            to={item.slug}
-                                            onClick={() => setIsOpen(false)}
-                                            className={`block px-4 py-2 rounded-lg ${
-                                                pathname === item.slug 
-                                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-medium' 
-                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                                            }`}
-                                        >
-                                            {item.name}
-                                        </Link>
-                                    </li>
-                                ) : null
-                            )}
-                            {authStatus && (
-                                <li className="px-4">
-                                    <LogoutBtn />
-                                </li>
-                            )}
-                        </ul>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Container>
-      </motion.header>
+      </header>
     );
 }
 

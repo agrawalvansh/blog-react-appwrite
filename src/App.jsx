@@ -1,10 +1,10 @@
-import {useDispatch} from 'react-redux'
-import { useState, useEffect } from 'react'
-import './App.css'
-import { Header, Footer } from './components/index'
-import authService from './appwrite/auth'
-import {login, logout} from './store/authSlice'
+import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
+import { Header, Footer } from './components'
+import './App.css'
+import { login, logout } from './store/authSlice'
+import authService from './appwrite/auth'
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -12,27 +12,25 @@ function App() {
 
   useEffect(() => {
     authService.getCurrentUser()
-    .then((userData) => {
-      if (userData) {
-        dispatch(login({userData}))
-      } else {
-        dispatch(logout())
-      }
-    })
-    .finally(() => setLoading(false))
-  }, [dispatch])
-  
-  return !loading ? (
-    <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
-      <div className='w-full block'>
-        <Header />
-        <main>
+      .then((userData) => {
+        if (userData) {
+          dispatch(login(userData))
+        } else {
+          dispatch(logout())
+        }
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  return loading ? null : (
+    <div className='min-h-screen flex flex-col w-full bg-gray-400'>
+      <Header />
+      <main className='flex-grow w-full'>
         <Outlet />
-        </main>
-        <Footer />
-      </div>
+      </main>
+      <Footer />
     </div>
-  ) : null
+  )
 }
 
 export default App

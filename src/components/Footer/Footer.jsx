@@ -50,7 +50,7 @@ function Footer() {
               </div>
               <div className="space-y-4">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  &copy; Copyright {currentYear}. All Rights Reserved by DevUI.
+                  &copy; Copyright {currentYear}. All Rights Reserved by Vansh Agrawal.
                 </p>
                 <div className="flex space-x-4">
                   {socialLinks.map(({ icon: Icon, href, label }) => (

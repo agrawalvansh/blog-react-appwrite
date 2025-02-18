@@ -1,26 +1,30 @@
-import service from "../appwrite/config-appwrite"
+import React, { useState } from 'react'
+import appwriteService from "../appwrite/config-appwrite"
 import {Link} from 'react-router-dom'
-import { useState } from 'react'
 
 function PostCard({$id, title, featuredImage}) {
     const [imageLoading, setImageLoading] = useState(true)
     
     return (
       <Link to={`/post/${$id}`}>
-          <div className='w-full bg-gray-50 dark:bg-gray-800 rounded-xl p-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.02]'>
-              <div className='w-full justify-center mb-4 aspect-video overflow-hidden rounded-xl relative'>
+          <div className='w-full bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300'>
+              <div className='w-full aspect-video relative'>
                   {imageLoading && (
-                      <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                      <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
                   )}
                   <img 
-                      src={service.getFilePreview(featuredImage)} 
+                      src={appwriteService.getFilePreview(featuredImage)}
                       alt={title}
-                      className='rounded-xl w-full h-full object-cover'
+                      className='w-full h-full object-cover'
                       onLoad={() => setImageLoading(false)}
                       style={{ opacity: imageLoading ? 0 : 1 }}
                   />
               </div>
-              <h2 className='text-xl font-bold text-gray-800 dark:text-gray-100 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400'>{title}</h2>
+              <div className="p-4">
+                  <h2 className='text-xl font-semibold text-gray-800 line-clamp-2 hover:text-blue-600 transition-colors'>
+                      {title}
+                  </h2>
+              </div>
           </div>
       </Link>
     )
